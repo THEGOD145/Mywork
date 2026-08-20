@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Arc & Angle Lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --paper: #F6F2E8;
+  --paper-line: #DDD5C2;
+  --ink: #1B2A4A;
+  --ink-soft: #4A5A78;
+  --accent: #C1440E;
+  --accent-soft: #E9C9B4;
+  --teal: #2E6E5E;
+  --teal-soft: #CFE3DB;
+  --wrong: #B23A2E;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px);
+  background-size: 100% 34px;
+  color:var(--ink);
+  font-family:'Inter', sans-serif;
+  padding: 0 0 80px 0;
+}
+
+.wrap{
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 24px 0 24px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 18px;
+  margin-bottom: 28px;
+  flex-wrap:wrap;
+}
+
+.title-block h1{
+  font-family:'Fraunces', serif;
+  font-weight:700;
+  font-size: 2.5rem;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.title-block p{
+  margin: 4px 0 0 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+#protractor{ flex-shrink:0; }
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+button.primary{
+  background: var(--ink);
+  color: var(--paper);
+  border:none;
+  font-family:'Space Mono', monospace;
+  font-weight:700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  padding: 12px 22px;
+  cursor:pointer;
+  border-radius: 3px;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+button.primary:hover{ background: var(--accent); transform: translateY(-1px); }
+button.primary:active{ transform: translateY(0); }
+
+#score{
+  font-family:'Space Mono', monospace;
+  font-size: 0.95rem;
+  background: var(--teal-soft);
+  border: 1.5px solid var(--teal);
+  color: var(--teal);
+  padding: 8px 16px;
+  border-radius: 3px;
+}
+
+.section-label{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size: 1.3rem;
+  margin: 42px 0 6px 0;
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+.section-label .formula{
+  font-family:'Space Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight:400;
+  background: var(--accent-soft);
+  padding: 3px 9px;
+  border-radius: 3px;
+}
+.section-note{
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  margin: 0 0 16px 0;
+  max-width: 640px;
+}
+
+.card{
+  background: #FFFDF8;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  position:relative;
+  box-shadow: 3px 3px 0 var(--paper-line);
+}
+.card .qnum{
+  position:absolute;
+  top:-12px;
+  left:16px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family:'Space Mono', monospace;
+  font-size: 0.72rem;
+  padding: 2px 9px;
+  border-radius: 3px;
+}
+
+.qtext{
+  font-size: 1.02rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+.qtext b{ color: var(--accent); }
+
+.proportion{
+  font-family:'Space Mono', monospace;
+  background: var(--teal-soft);
+  border-left: 3px solid var(--teal);
+  padding: 8px 12px;
+  margin: 10px 0 14px 0;
+  font-size: 0.95rem;
+  border-radius: 2px;
+  display:inline-block;
+}
+
+.answer-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top: 8px;
+}
+
+.answer-row label{
+  font-family:'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+input.ans{
+  font-family:'Space Mono', monospace;
+  font-size: 1rem;
+  padding: 8px 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  width: 130px;
+  background: var(--paper);
+  color: var(--ink);
+}
+input.ans:focus{ outline: 2px solid var(--accent); }
+
+button.check{
+  font-family:'Space Mono', monospace;
+  font-size: 0.85rem;
+  background: none;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  padding: 8px 14px;
+  border-radius: 3px;
+  cursor:pointer;
+}
+button.check:hover{ background: var(--ink); color: var(--paper); }
+
+.feedback{
+  margin-top: 10px;
+  font-family:'Space Mono', monospace;
+  font-size: 0.88rem;
+  padding: 8px 12px;
+  border-radius: 3px;
+  display:none;
+}
+.feedback.correct{
+  display:block;
+  background: var(--teal-soft);
+  color: var(--teal);
+  border-left: 3px solid var(--teal);
+}
+.feedback.wrong{
+  display:block;
+  background: #F5DAD5;
+  color: var(--wrong);
+  border-left: 3px solid var(--wrong);
+}
+
+.hint{
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+footer{
+  text-align:center;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  margin-top: 50px;
+  font-family:'Space Mono', monospace;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title-block">
+      <h1>Arc &amp; Angle Lab</h1>
+      <p>cross-multiplication &middot; degrees &middot; radians &middot; decimals</p>
+    </div>
+    <svg id="protractor" width="120" height="70" viewBox="0 0 120 70">
+      <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#1B2A4A" stroke-width="2.5"/>
+      <line x1="10" y1="65" x2="110" y2="65" stroke="#1B2A4A" stroke-width="2.5"/>
+      <path id="arc-demo" d="M 10 65 A 50 50 0 0 1 60 15" fill="none" stroke="#C1440E" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="60" cy="65" r="2.5" fill="#1B2A4A"/>
+    </svg>
+  </header>
+
+  <div class="controls">
+    <button class="primary" id="newQuizBtn">↻ New Quiz (randomize)</button>
+    <div id="score">score: 0 / 0</div>
+  </div>
+
+  <div class="section-label">1. Arc Length <span class="formula">s / 2πr = θ / 360</span></div>
+  <p class="section-note">Use cross multiplication to solve for arc length s. Give your answer as a reduced fraction times π (e.g. <b>7/3</b> for (7/3)π). If it reduces to a whole number, just enter the whole number.</p>
+  <div id="arcSection"></div>
+
+  <div class="section-label">2. Degrees &rarr; Radians <span class="formula">&times; π/180</span></div>
+  <p class="section-note">Convert degree measure to radians. Give your answer as a reduced fraction times π (e.g. <b>2/3</b> for (2/3)π).</p>
+  <div id="degToRadSection"></div>
+
+  <div class="section-label">3. Radians &rarr; Degrees <span class="formula">&times; 180/π</span></div>
+  <p class="section-note">Convert radian measure to degrees. Give your answer as a whole number of degrees (or a reduced fraction if it doesn't come out whole).</p>
+  <div id="radToDegSection"></div>
+
+  <div class="section-label">4. Radians &rarr; Decimal <span class="formula">π &approx; 3.14159</span></div>
+  <p class="section-note">Convert radian measure (a fraction of π) into a decimal, rounded to the nearest hundredth.</p>
+  <div id="radToDecSection"></div>
+
+  <footer>generated problems &middot; values re-randomize every time you click "New Quiz"</footer>
+</div>
+
+<script>
+const PI_DISPLAY = "π";
+const PI_VAL = Math.PI;
+
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b, a%b]; } return a || 1; }
+function simplify(num, den){
+  if(den < 0){ num = -num; den = -den; }
+  const g = gcd(num, den);
+  return [num/g, den/g];
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function fracLabel(num, den){
+  if(den === 1) return `${num}`;
+  return `${num}/${den}`;
+}
+
+// parse a user-entered fraction / whole number / "a/b" string (ignoring any pi/π they might type)
+function parseFraction(str){
+  if(str === null) return null;
+  let s = str.trim().toLowerCase().replace(/π/g,'').replace(/pi/g,'').trim();
+  if(s === '') return null;
+  if(s.includes('/')){
+    const parts = s.split('/');
+    if(parts.length !== 2) return null;
+    const n = parseFloat(parts[0]);
+    const d = parseFloat(parts[1]);
+    if(isNaN(n) || isNaN(d) || d === 0) return null;
+    return {num:n, den:d};
+  } else {
+    const n = parseFloat(s);
+    if(isNaN(n)) return null;
+    return {num:n, den:1};
+  }
+}
+function fractionsEqual(a, b, tol=1e-6){
+  return Math.abs((a.num/a.den) - (b.num/b.den)) < tol;
+}
+function parseDecimal(str){
+  if(str === null) return null;
+  const n = parseFloat(str.trim());
+  if(isNaN(n)) return null;
+  return n;
+}
+
+// ---------- Problem generators ----------
+
+const RADII = [2,3,4,5,6,8,9,10,12,15];
+const ARC_ANGLES = [30,36,40,45,60,72,80,90,100,120,135,144,150,160,180,200,225,240,270,300,315,330];
+const DEG_VALUES = [15,20,24,30,36,40,45,50,60,72,75,80,90,100,110,120,125,135,140,150,160,165,175,180,200,220,225,240,270,300,315,330,340,350];
+// fraction-of-pi values with denominators that are divisors of 180 so deg->deg conversions land nicely
+const PI_FRACS = [
+  [1,6],[1,4],[1,3],[1,2],[2,3],[3,4],[5,6],[1,1],[7,6],[5,4],[4,3],[3,2],
+  [5,3],[7,4],[11,6],[1,9],[2,9],[4,9],[5,9],[7,9],[8,9],[1,5],[2,5],[3,5],
+  [4,5],[1,10],[3,10],[7,10],[9,10],[1,12],[5,12],[7,12],[11,12]
+];
+
+function genArcProblem(){
+  const r = pick(RADII);
+  const theta = pick(ARC_ANGLES);
+  // s = (theta/360) * 2 * pi * r = (theta*r/180) * pi
+  const [num, den] = simplify(theta*r, 180);
+  return {
+    type:'arc',
+    r, theta,
+    ansNum:num, ansDen:den,
+    prompt: `A circle has radius <b>r = ${r}</b> and a central angle of <b>${theta}°</b>. Set up the cross-multiplication proportion and solve for the arc length s (leave your answer in terms of π).`,
+    proportion: `s / (2π&middot;${r}) &nbsp;=&nbsp; ${theta} / 360`
+  };
+}
+
+function genDegToRad(){
+  const d = pick(DEG_VALUES);
+  const [num, den] = simplify(d, 180);
+  return {
+    type:'d2r',
+    d,
+    ansNum:num, ansDen:den,
+    prompt: `Convert <b>${d}°</b> to radians.`,
+    proportion: `${d} &times; π/180 &nbsp;=&nbsp; ${d}π / 180`
+  };
+}
+
+function genRadToDeg(){
+  const [p,q] = pick(PI_FRACS);
+  // degrees = p/q * 180
+  const num = p*180, den = q;
+  const [dNum, dDen] = simplify(num, den);
+  return {
+    type:'r2d',
+    p, q,
+    ansNum:dNum, ansDen:dDen,
+    prompt: `Convert <b>${fracLabel(p,q)}π</b> radians to degrees.`,
+    proportion: `(${fracLabel(p,q)}π) &times; 180/π &nbsp;=&nbsp; ${fracLabel(p,q)} &times; 180`
+  };
+}
+
+function genRadToDec(){
+  const [p,q] = pick(PI_FRACS);
+  const value = (p/q) * PI_VAL;
+  const rounded = Math.round(value*100)/100;
+  return {
+    type:'r2dec',
+    p, q,
+    ansDecimal: rounded,
+    prompt: `Convert <b>${fracLabel(p,q)}π</b> radians to a decimal. Round to the nearest hundredth.`,
+    proportion: `${fracLabel(p,q)} &times; 3.14159&hellip;`
+  };
+}
+
+// ---------- Rendering ----------
+
+let score = { correct:0, total:0 };
+
+function updateScore(){
+  document.getElementById('score').textContent = `score: ${score.correct} / ${score.total}`;
+}
+
+function makeCard(container, idx, problem, checkFn, placeholder){
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="qnum">Q${idx}</div>
+    <div class="qtext">${problem.prompt}</div>
+    <div class="proportion">${problem.proportion}</div>
+    <div class="answer-row">
+      <label>answer:</label>
+      <input type="text" class="ans" placeholder="${placeholder}">
+      <button class="check">Check</button>
+    </div>
+    <div class="hint">${placeholder === 'e.g. 5/6' ? 'Enter as a reduced fraction (coefficient of π). Whole numbers ok too.' : (placeholder === 'e.g. 150' ? 'Whole number of degrees, or a fraction.' : 'Decimal number, e.g. 2.36')}</div>
+    <div class="feedback"></div>
+  `;
+  const input = card.querySelector('input.ans');
+  const btn = card.querySelector('button.check');
+  const fb = card.querySelector('.feedback');
+  let answered = false;
+
+  btn.addEventListener('click', () => {
+    const result = checkFn(input.value);
+    if(!answered){
+      score.total += 1;
+      answered = true;
+    } else {
+      // re-checking doesn't double count total, but do adjust correctness
+    }
+    if(result.correct){
+      fb.className = 'feedback correct';
+      fb.textContent = `✓ Correct! ${result.correctText}`;
+      if(!answered || result.wasWrong === false) {}
+    } else {
+      fb.className = 'feedback wrong';
+      fb.textContent = `✗ Not quite. Correct answer: ${result.correctText}`;
+    }
+    updateScore();
+    btn.disabled = true;
+    input.disabled = true;
+  });
+
+  input.addEventListener('keydown', (e) => { if(e.key === 'Enter') btn.click(); });
+
+  container.appendChild(card);
+}
+
+function buildQuiz(){
+  score = { correct:0, total:0 };
+  updateScore();
+
+  const arcSection = document.getElementById('arcSection');
+  const d2rSection = document.getElementById('degToRadSection');
+  const r2dSection = document.getElementById('radToDegSection');
+  const r2decSection = document.getElementById('radToDecSection');
+  arcSection.innerHTML = '';
+  d2rSection.innerHTML = '';
+  r2dSection.innerHTML = '';
+  r2decSection.innerHTML = '';
+
+  // update decorative protractor arc to a random angle for flavor
+  const demoAngle = pick(ARC_ANGLES) % 180;
+  const rad = (demoAngle) * Math.PI/180;
+  const cx=60, cy=65, rr=50;
+  const ex = cx - rr*Math.cos(rad);
+  const ey = cy - rr*Math.sin(rad);
+  const largeArc = demoAngle > 180 ? 1 : 0;
+  document.getElementById('arc-demo').setAttribute('d', `M 10 65 A 50 50 0 ${largeArc} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+
+  for(let i=1;i<=3;i++){
+    const p = genArcProblem();
+    makeCard(arcSection, i, p, (val) => {
+      const parsed = parseFraction(val);
+      const correctFrac = {num:p.ansNum, den:p.ansDen};
+      const correctText = p.ansDen === 1 ? `${p.ansNum}π` : `${p.ansNum}/${p.ansDen}π`;
+      if(parsed && fractionsEqual(parsed, correctFrac)){
+        score.correct += 1;
+        return {correct:true, correctText};
+      }
+      return {correct:false, correctText};
+    }, 'e.g. 5/6');
+  }
+
+  for(let i=1;i<=3;i++){
+    const p = genDegToRad();
+    makeCard(d2rSection, i, p, (val) => {
+      const parsed = parseFraction(val);
+      const correctFrac = {num:p.ansNum, den:p.ansDen};
+      const correctText = p.ansDen === 1 ? `${p.ansNum}π` : `${p.ansNum}/${p.ansDen}π`;
+      if(parsed && fractionsEqual(parsed, correctFrac)){
+        score.correct += 1;
+        return {correct:true, correctText};
+      }
+      return {correct:false, correctText};
+    }, 'e.g. 5/6');
+  }
+
+  for(let i=1;i<=3;i++){
+    const p = genRadToDeg();
+    makeCard(r2dSection, i, p, (val) => {
+      const parsed = parseFraction(val);
+      const correctFrac = {num:p.ansNum, den:p.ansDen};
+      const correctText = p.ansDen === 1 ? `${p.ansNum}°` : `${p.ansNum}/${p.ansDen}°`;
+      if(parsed && fractionsEqual(parsed, correctFrac)){
+        score.correct += 1;
+        return {correct:true, correctText};
+      }
+      return {correct:false, correctText};
+    }, 'e.g. 150');
+  }
+
+  for(let i=1;i<=3;i++){
+    const p = genRadToDec();
+    makeCard(r2decSection, i, p, (val) => {
+      const parsed = parseDecimal(val);
+      const correctText = `${p.ansDecimal}`;
+      if(parsed !== null && Math.abs(parsed - p.ansDecimal) < 0.02){
+        score.correct += 1;
+        return {correct:true, correctText};
+      }
+      return {correct:false, correctText};
+    }, 'e.g. 2.36');
+  }
+}
+
+document.getElementById('newQuizBtn').addEventListener('click', buildQuiz);
+buildQuiz();
+</script>
+</body>
+</html>
